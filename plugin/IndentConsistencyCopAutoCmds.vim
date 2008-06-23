@@ -31,12 +31,14 @@
 "   If you don't like the default filetypes that are inspected, modify the
 "   comma-separated list of filetypes in g:indentconsistencycop_filetypes. 
 "
-" Copyright: (C) 2006 by Ingo Karkat
+" Copyright: (C) 2006-2008 by Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'. 
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS 
+"   1.10.004	13-Jun-2008	Added -bar to all commands that do not take any
+"				arguments, so that these can be chained together. 
 "   1.10.003	21-Feb-2008	Avoiding multiple invocations of the
 "				IndentConsistencyCop when reloading or switching
 "				buffers. Now there's only one check per file and
@@ -88,12 +90,12 @@ function! s:StartCopBasedOnFiletype( filetype )
 	    autocmd!
 	    " When a buffer is loaded, the FileType event will fire before the
 	    " BufWinEnter event, so that the IndentConsistencyCop is triggered. 
-	    autocmd BufWinEnter <buffer> call s:StartCopOnce() |  autocmd! IndentConsistencyCopBufferCmds * <buffer>
+	    autocmd BufWinEnter <buffer> call <SID>StartCopOnce() |  autocmd! IndentConsistencyCopBufferCmds * <buffer>
 	    " When the filetype changes in an existing buffer, the BufWinEnter
 	    " event is not fired. We use the CursorHold event to trigger the
 	    " IndentConsistencyCop when the user pauses for a brief period.
 	    " (There's no better event for that.)
-	    autocmd CursorHold <buffer> call s:StartCopOnce() |  autocmd! IndentConsistencyCopBufferCmds * <buffer>
+	    autocmd CursorHold <buffer> call <SID>StartCopOnce() |  autocmd! IndentConsistencyCopBufferCmds * <buffer>
 	augroup END
     endif
 endfunction
@@ -111,7 +113,7 @@ endfunction
 call s:IndentConsistencyCopAutoCmds(1)
 
 "- commands -------------------------------------------------------------------
-command! -nargs=0 IndentConsistencyCopAutoCmdsOn call <SID>IndentConsistencyCopAutoCmds(1)
-command! -nargs=0 IndentConsistencyCopAutoCmdsOff call <SID>IndentConsistencyCopAutoCmds(0)
+command! -bar -nargs=0 IndentConsistencyCopAutoCmdsOn call <SID>IndentConsistencyCopAutoCmds(1)
+command! -bar -nargs=0 IndentConsistencyCopAutoCmdsOff call <SID>IndentConsistencyCopAutoCmds(0)
 
 " vim: set sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
