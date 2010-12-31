@@ -1,16 +1,29 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=1691
 
-DESCRIPTION:
-  The autocmds in this script automatically trigger the IndentConsistencyCop
-  for certain, configurable filetypes (such as c, cpp, html, xml, which
-  typically contain lots of indented lines) once when you load the file in
-  VIM. The entire buffer will be checked for inconsistent indentation, and you
-  will receive a report on its findings. With this automatic background check,
-  you'll become aware of indentation problems before you start editing. 
+DESCRIPTION
+The autocmds in this script automatically trigger the IndentConsistencyCop for
+certain, configurable filetypes (such as c, cpp, html, xml, ... which
+typically contain lots of indented lines) once when you load the file in Vim,
+and (optionally) also on every write of the buffer. The entire buffer will be
+checked for inconsistent indentation, and you will receive a report on its
+findings. With this automatic background check, you'll become aware of
+indentation problems before you start editing and in case you accidentally
+introduce an inconsistency with your edits. 
 
-USAGE:
-  Triggering happens automatically; of cause, you can still start the
-  IndentConsistencyCop ex command to re-check the buffer after changes. 
+USAGE
+Triggering happens automatically; of course, you can still manually execute
+the :IndentConsistencyCop command to re-check the buffer at any time. 
 
-  For very large files, the check may take a couple of seconds. You can abort
-  the script run with CTRL-C, like any other VIM command. 
+For very large files, the check may take a couple of seconds. You can abort
+the script run with CTRL-C, like any other Vim command. 
+
+If you chose to "Ignore" any inconsistent indents in the IndentConsistencyCop
+report, further automatic invocations on buffer writes are suspended. It is
+assumed that you don't bother for this particular file. You can re-enable
+automatic invocations by manually invoking :IndentConsistencyCop once and then
+choosing an option other than "Ignore". 
+
+:IndentConsistencyCopAutoCmdsOff
+:IndentConsistencyCopAutoCmdsOn
+			Disable / re-enable the autocommands. This affects all
+			existing buffers as well as any newly opened files. 
