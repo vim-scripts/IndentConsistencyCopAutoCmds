@@ -4,12 +4,17 @@
 "   - Requires Vim 7.0 or higher. 
 "   - Requires IndentConsistencyCop.vim (vimscript #1690). 
 "
-" Copyright: (C) 2006-2010 by Ingo Karkat
+" Copyright: (C) 2006-2011 by Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'. 
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS 
+"   1.31.009	08-Jan-2011	BUG: "E216: No such group or event:
+"				IndentConsistencyCopBufferCmds" on
+"				:IndentConsistencyCopAutoCmdsOff. Using :silent
+"				to suppress this error when the group doesn't
+"				exist. 
 "   1.30.008	31-Dec-2010	Allowing to just run indent consistency check,
 "				not buffer settings at all times via
 "				g:indentconsistencycop_AutoRunCmd. 
@@ -164,7 +169,7 @@ function! s:IndentConsistencyCopAutoCmds(isOn)
     augroup END
 
     if ! a:isOn
-	autocmd! IndentConsistencyCopBufferCmds
+	silent! autocmd! IndentConsistencyCopBufferCmds
     endif
 endfunction
 

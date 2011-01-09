@@ -104,6 +104,10 @@ IDEAS					  *IndentConsistencyCopAutoCmds-ideas*
 ==============================================================================
 HISTORY					*IndentConsistencyCopAutoCmds-history*
 
+1.31	08-Jan-2011
+BUG: "E216: No such group or event: IndentConsistencyCopBufferCmds" on
+:IndentConsistencyCopAutoCmdsOff. 
+
 1.30	31-Dec-2010
 - ENH: Do not invoke the IndentConsistencyCop if the user chose to ignore the
   cop's report of an inconsistency. Requires
@@ -147,7 +151,7 @@ First published version.
 Started development. 
 
 ==============================================================================
-Copyright: (C) 2006-2010 Ingo Karkat
+Copyright: (C) 2006-2011 Ingo Karkat
 The VIM LICENSE applies to this script; see |copyright|. 
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
