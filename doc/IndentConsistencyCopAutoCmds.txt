@@ -104,6 +104,13 @@ IDEAS					  *IndentConsistencyCopAutoCmds-ideas*
 ==============================================================================
 HISTORY					*IndentConsistencyCopAutoCmds-history*
 
+1.32	07-Mar-2012
+Avoid "E464: Ambiguous use of user-defined command: IndentConsistencyCop" when
+loading of the IndentConsistencyCop has been suppressed via --cmd "let
+g:loaded_indentconsistencycop = 1" by checking for the existence of the
+command in the definition of the autocmds. Do not define the commands when the
+IndentConsistencyCop command has not been defined.
+
 1.31	08-Jan-2011
 BUG: "E216: No such group or event: IndentConsistencyCopBufferCmds" on
 :IndentConsistencyCopAutoCmdsOff. 
@@ -151,7 +158,7 @@ First published version.
 Started development. 
 
 ==============================================================================
-Copyright: (C) 2006-2011 Ingo Karkat
+Copyright: (C) 2006-2012 Ingo Karkat
 The VIM LICENSE applies to this script; see |copyright|. 
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>

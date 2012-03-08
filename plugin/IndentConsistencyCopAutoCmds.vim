@@ -4,12 +4,21 @@
 "   - Requires Vim 7.0 or higher. 
 "   - Requires IndentConsistencyCop.vim (vimscript #1690). 
 "
-" Copyright: (C) 2006-2011 by Ingo Karkat
+" Copyright: (C) 2006-2012 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'. 
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS 
+"   1.32.010	07-Mar-2012	Avoid "E464: Ambiguous use of user-defined
+"				command: IndentConsistencyCop" when loading of
+"				the IndentConsistencyCop has been suppressed via
+"				--cmd "let g:loaded_indentconsistencycop = 1" by
+"				checking for the existence of the command in the
+"				definition of the autocmds.
+"				Do not define the commands when the
+"				IndentConsistencyCop command has not been
+"				defined.
 "   1.31.009	08-Jan-2011	BUG: "E216: No such group or event:
 "				IndentConsistencyCopBufferCmds" on
 "				:IndentConsistencyCopAutoCmdsOff. Using :silent
@@ -64,6 +73,7 @@ endif
 let g:loaded_indentconsistencycopautocmds = 1
 
 "- configuration --------------------------------------------------------------
+
 if ! exists('g:indentconsistencycop_filetypes')
     let g:indentconsistencycop_filetypes = 'ant,c,cpp,cs,csh,css,dosbatch,html,java,javascript,jsp,lisp,pascal,perl,php,python,ruby,scheme,sh,sql,tcsh,vb,vbs,vim,wsh,xhtml,xml,xsd,xslt,zsh'
 endif
@@ -79,6 +89,7 @@ endif
 
 
 "- functions ------------------------------------------------------------------
+
 function! s:StartCopOnce( copCommand )
     " The straightforward way to ensure that the Cop is called only once per
     " file is to hook into the BufRead event. We cannot do this, because at that
@@ -159,26 +170,33 @@ function! s:StartCopBasedOnFiletype( filetype )
 "****D execute 'autocmd IndentConsistencyCopBufferCmds' | call confirm("Active IndentConsistencyCopBufferCmds")
     endif
 endfunction
+function! s:ExistsIndentConsistencyCop()
+    return exists(':IndentConsistencyCop') == 2
+endfunction
 
-function! s:IndentConsistencyCopAutoCmds(isOn)
+function! s:IndentConsistencyCopAutoCmds( isOn )
+    let l:isEnable = a:isOn && s:ExistsIndentConsistencyCop()
     augroup IndentConsistencyCopAutoCmds
 	autocmd!
-	if a:isOn
+	if l:isEnable
 	    autocmd FileType * call <SID>StartCopBasedOnFiletype( expand('<amatch>') )
 	endif
     augroup END
 
-    if ! a:isOn
+    if ! l:isEnable
 	silent! autocmd! IndentConsistencyCopBufferCmds
     endif
 endfunction
 
-" Enable the autocommands. 
+" Enable the autocommands.
 call s:IndentConsistencyCopAutoCmds(1)
 
 
 "- commands -------------------------------------------------------------------
-command! -bar IndentConsistencyCopAutoCmdsOn  call <SID>IndentConsistencyCopAutoCmds(1)
-command! -bar IndentConsistencyCopAutoCmdsOff call <SID>IndentConsistencyCopAutoCmds(0)
 
-" vim: set sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
+if s:ExistsIndentConsistencyCop()
+    command! -bar IndentConsistencyCopAutoCmdsOn  call <SID>IndentConsistencyCopAutoCmds(1)
+    command! -bar IndentConsistencyCopAutoCmdsOff call <SID>IndentConsistencyCopAutoCmds(0)
+endif
+
+" vim: set ts=8 sts=4 sw=4 noexpandtab ff=unix fdm=syntax :
