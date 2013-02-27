@@ -6,6 +6,7 @@ description			|IndentConsistencyCopAutoCmds-description|
 usage				|IndentConsistencyCopAutoCmds-usage|
 installation			|IndentConsistencyCopAutoCmds-installation|
 configuration			|IndentConsistencyCopAutoCmds-configuration|
+integration			|IndentConsistencyCopAutoCmds-integration|
 limitations			|IndentConsistencyCopAutoCmds-limitations|
 known problems			|IndentConsistencyCopAutoCmds-known-problems|
 todo				|IndentConsistencyCopAutoCmds-todo|
@@ -108,6 +109,17 @@ If you don't want the check for consistency with the buffer settings, set >
     let g:indentconsistencycop_AutoRunCmd = 'IndentRangeConsistencyCop'
 <
 ==============================================================================
+INTEGRATION			    *IndentConsistencyCopAutoCmds-integration*
+
+					   *b:indentconsistencycop_SkipChecks*
+If you want to disable the automatic checks for certain buffers only, without
+turning off the IndentConsistencyCop completely through
+|:IndentConsistencyCopAutoCmdsOff| or for certain filetypes by adapting
+|g:indentconsistencycop_filetypes|, set a buffer variable, e.g. via one of the
+local vimrc plugins: >
+    :let b:indentconsistencycop_SkipChecks = 1
+<
+==============================================================================
 LIMITATIONS			    *IndentConsistencyCopAutoCmds-limitations*
 
 KNOWN PROBLEMS			 *IndentConsistencyCopAutoCmds-known-problems*
@@ -118,6 +130,16 @@ IDEAS					  *IndentConsistencyCopAutoCmds-ideas*
 
 ==============================================================================
 HISTORY					*IndentConsistencyCopAutoCmds-history*
+
+1.42	27-Feb-2013
+When the persistence of the buffer fails (e.g. with "E212: Cannot open for
+writing"), don't run the cop; its messages may obscure the write error.
+
+1.41	23-Oct-2012 (unreleased)
+ENH: Allow skipping automatic checks for certain buffers (i.e. not globally
+disabling the checks via :IndentConsistencyCopAutoCmdsOff), configured for
+example by a directory-local vimrc, via new b:indentconsistencycop_SkipChecks
+setting.
 
 1.40	26-Sep-2012
 ENH: Allow check only on buffer writes by clearing new config flag
@@ -181,7 +203,7 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2006-2012 Ingo Karkat
+Copyright: (C) 2006-2013 Ingo Karkat
 The VIM LICENSE applies to this script; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
