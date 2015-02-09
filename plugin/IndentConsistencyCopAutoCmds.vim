@@ -3,13 +3,22 @@
 " DEPENDENCIES:
 "   - Requires Vim 7.0 or higher.
 "   - Requires IndentConsistencyCop.vim (vimscript #1690).
+"   - ingo/plugin.vim autoload script
 "
-" Copyright: (C) 2006-2013 Ingo Karkat
+" Copyright: (C) 2006-2015 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.45.015	30-Jan-2015	Allow buffer-local config for
+"				indentconsistencycop_CheckOnLoad,
+"				indentconsistencycop_CheckAfterWrite,
+"				indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck.
+"				FIX: Install of continuous buffer autocmd never
+"				worked because of missing <buffer> target.
+"   1.45.014	13-Jun-2014	Add several more filetypes to
+"				g:indentconsistencycop_filetypes.
 "   1.42.013	26-Feb-2013	When the persistence of the buffer fails (e.g.
 "				with "E212: Cannot open for writing"), don't run
 "				the cop; its messages may obscure the write
@@ -95,7 +104,7 @@ let g:loaded_indentconsistencycopautocmds = 1
 "- configuration --------------------------------------------------------------
 
 if ! exists('g:indentconsistencycop_filetypes')
-    let g:indentconsistencycop_filetypes = 'ant,c,cpp,cs,csh,css,dosbatch,html,java,javascript,jsp,lisp,pascal,perl,php,python,ruby,scheme,sh,sql,tcsh,vb,vbs,vim,wsh,xhtml,xml,xsd,xslt,zsh'
+    let g:indentconsistencycop_filetypes = 'actionscript,ant,atom,c,cpp,cs,csh,css,dosbatch,groovy,gsp,html,java,javascript,json,jsp,lisp,mxml,pascal,perl,php,ps1,python,ruby,scheme,sh,sql,tcsh,vb,vbs,vim,wsh,xhtml,xml,xsd,xslt,zsh'
 endif
 if ! exists('g:indentconsistencycop_CheckOnLoad')
     let g:indentconsistencycop_CheckOnLoad = 1
@@ -162,7 +171,7 @@ function! s:StartCopAfterWrite( copCommand, event )
     " on the next 'CursorHold' event, hoping that the user is then away, busy
     " reading, or just looking out of the window... and won't mind the
     " inspection. (He can always abort via CTRL-C.)
-    if line('$') <= g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck
+    if line('$') <= ingo#plugin#setting#GetBufferLocal('indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck')
 	execute a:copCommand
 	let b:indentconsistencycop_is_checked = 1
     else
@@ -178,7 +187,7 @@ function! s:InstallAutoCmd( copCommand, events, isStartOnce )
 	    execute l:autocmd 'call <SID>StartCopOnce(' . string(a:copCommand) . ') |' l:autocmd
 	else
 	    for l:event in a:events
-		execute printf('autocmd! IndentConsistencyCopBufferCmds %s call <SID>StartCopAfterWrite(%s, %s)', l:event, string(a:copCommand), string(l:event))
+		execute printf('autocmd! IndentConsistencyCopBufferCmds %s <buffer> call <SID>StartCopAfterWrite(%s, %s)', l:event, string(a:copCommand), string(l:event))
 	    endfor
 	endif
     augroup END
@@ -198,13 +207,14 @@ function! s:StartCopBasedOnFiletype( filetype )
 	" IndentConsistencyCop when the user pauses for a brief period.
 	" (There's no better event for that.)
 
-	if g:indentconsistencycop_CheckOnLoad
+	let l:isCheckOnLoad = ingo#plugin#setting#GetBufferLocal('indentconsistencycop_CheckOnLoad')
+	if l:isCheckOnLoad
 	    " Check both indent consistency and consistency with buffer indent
 	    " settings when a file is loaded.
 	    call s:InstallAutoCmd(g:indentconsistencycop_AutoRunCmd, ['BufWinEnter', 'CursorHold'], 1)
 	endif
-	if g:indentconsistencycop_CheckAfterWrite
-	    if g:indentconsistencycop_CheckOnLoad
+	if ingo#plugin#setting#GetBufferLocal('indentconsistencycop_CheckAfterWrite')
+	    if l:isCheckOnLoad
 		" Only check indent consistency after a write of the buffer. The
 		" user already was alerted to inconsistent buffer settings when
 		" the file was loaded; editing the file did't change anything in

@@ -65,6 +65,8 @@ DEPENDENCIES			   *IndentConsistencyCopAutoCmds-dependencies*
 
 - Requires Vim 7.0 or higher.
 - Requires the IndentConsistencyCop.vim plugin (vimscript #1690).
+- Requires the |ingo-library.vim| plugin (vimscript #4433), version 1.010 or
+  higher.
 
 ==============================================================================
 CONFIGURATION			  *IndentConsistencyCopAutoCmds-configuration*
@@ -74,10 +76,10 @@ For a permanent configuration, put the following commands into your |vimrc|:
 					    *g:indentconsistencycop_filetypes*
 If you don't like the default filetypes that are inspected, define your own
 comma-separated list of filetypes or add to the existing ones: >
-    let g:indentconsistencycop_filetypes = 'ant,c,cpp,cs,csh,css,dosbatch,html,java,javascript,jsp,lisp,pascal,perl,php,python,ruby,scheme,sh,sql,tcsh,vb,vbs,vim,wsh,xhtml,xml,xsd,xslt,zsh'
+    let g:indentconsistencycop_filetypes = 'c,cpp,java,javascript,perl,php,python,ruby,sh,tcsh,vim'
     let g:indentconsistencycop_filetypes .= ',perl6'
 <
-					  *g:indentconsistencycop_CheckOnLoad*
+     *b:indentconsistencycop_CheckOnLoad* *g:indentconsistencycop_CheckOnLoad*
 Turn off the IndentConsistencyCop run when a buffer is loaded via >
     let g:indentconsistencycop_CheckOnLoad = 0
 This avoids alerts when just viewing files (especially the multiple
@@ -86,12 +88,12 @@ could also temporarily disable the autocmds in that case via
 |:IndentConsistencyCopAutoCmdsOff|). On the other hand, it comes with the risk
 of introducing indent inconsistencies until the first write (when the buffer's
 indent settings do not match the file's).
-
+				      *b:indentconsistencycop_CheckAfterWrite*
 				      *g:indentconsistencycop_CheckAfterWrite*
 Turn off the IndentConsistencyCop run after each write via >
     let g:indentconsistencycop_CheckAfterWrite = 0
 The IndentConsistencyCop will only run once after loading a file.
-
+	     *b:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck*
 	     *g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck*
 To avoid blocking the user whenever a large buffer is written, the
 IndentConsistencyCop is only scheduled to run on the next 'CursorHold' event
@@ -130,6 +132,16 @@ IDEAS					  *IndentConsistencyCopAutoCmds-ideas*
 
 ==============================================================================
 HISTORY					*IndentConsistencyCopAutoCmds-history*
+
+1.45	09-Feb-2015
+- Add several more filetypes to g:indentconsistencycop_filetypes.
+- FIX: Install of continuous buffer autocmd never worked because of missing
+  <buffer> target.
+- Allow buffer-local config for indentconsistencycop_CheckOnLoad,
+  indentconsistencycop_CheckAfterWrite,
+  indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck.
+- Add dependency to ingo-library (vimscript #4433). *** You need to separately
+  install ingo-library (vimscript #4433) version 1.010 (or higher)! ***
 
 1.42	27-Feb-2013
 When the persistence of the buffer fails (e.g. with "E212: Cannot open for
@@ -203,8 +215,8 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2006-2013 Ingo Karkat
-The VIM LICENSE applies to this script; see |copyright|.
+Copyright: (C) 2006-2015 Ingo Karkat
+The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
 ==============================================================================
